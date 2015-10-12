@@ -3,29 +3,30 @@ package me.jp.demo;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import me.jp.demo.activity.CommonActivity;
 import me.jp.demo.activity.FragmentsActivity;
-import me.jp.titlebarlayout.TitleBarActivity;
 import me.jp.titlebarlayout.view.TitleBarLayout;
 
-public class MainActivity extends TitleBarActivity implements OnClickListener {
+public class MainActivity extends AppCompatActivity implements OnClickListener {
 
+    private TitleBarLayout mTitleBarLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initTitleBar();
+        initView();
     }
 
-    private void initTitleBar() {
-        setTitleBarActionType(TitleBarLayout.ActionType.LEFT_IMG_RIGHT_IMG);
-        setTitleBarTxt("MainActivity");
-        setOnTitleBarClickListener(this);
-        getTitleBarLayout().setTitleTxtColor(Color.WHITE);
+    private void initView() {
+        mTitleBarLayout = (TitleBarLayout) findViewById(R.id.titleBarLayout);
+        mTitleBarLayout.setTitleTxtColor(Color.WHITE);
+        mTitleBarLayout.setTitleTxtString("MainActivity");
+        mTitleBarLayout.setOnBothSideClickListener(this);
     }
 
     @Override

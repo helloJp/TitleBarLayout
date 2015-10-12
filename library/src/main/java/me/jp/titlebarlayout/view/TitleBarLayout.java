@@ -2,6 +2,7 @@ package me.jp.titlebarlayout.view;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -22,27 +23,28 @@ import me.jp.titlebarlayout.R;
  */
 public class TitleBarLayout extends RelativeLayout implements View.OnClickListener {
     private static final String TAG = "title bar";
+
     //all views
     private TextView mTvTitle;
     private TextView mTvLeft;
     private TextView mTvRight;
 
     //title attribute
-    private int mTextSizeTitle = 24;//sp
-    private int mTextColorTitle = Color.BLACK;
-    private String mTextStrTitle = "title";
+    private int mTitleTxtSize;
+    private int mTitleTxtColor = Color.BLACK;
+    private String mTitleTxt = "title";
 
     //left attribute
-    private int mTextSizeLeft = 15;//sp
-    private ColorStateList mTextColorLeft = getResources().getColorStateList(R.color.selector_title_bar_text);
-    private String mTextStrLeft;
-    private Drawable mDrawableLeft = getResources().getDrawable(R.drawable.selector_btn_left);
+    private String mLeftTxt;
+    private int mLeftTxtSize;
+    private ColorStateList mLeftTxtColor;
+    private Drawable mLeftDrawable;
 
     //right attribute
-    private int mTextSizeRight = 15;//sp
-    private ColorStateList mTextColorRight = getResources().getColorStateList(R.color.selector_title_bar_text);
-    private String mTextStrRight;
-    private Drawable mDrawableRight = getResources().getDrawable(R.drawable.selector_btn_right);
+    private String mRightTxt;
+    private int mRightTxtSize;
+    private ColorStateList mRightTxtColor;
+    private Drawable mRightDrawable;
 
     //base line
     private Paint mBaseLinePaint;
@@ -50,7 +52,7 @@ public class TitleBarLayout extends RelativeLayout implements View.OnClickListen
     private boolean mIsDrawBaseLine = false;
 
 
-    private ActionType mCurrActionType = ActionType.LEFT_IMG_RIGHT_IMG;
+    private ActionType mCurrActionType;
 
     private final int DEFAULT_PADDING = dip2px(10);
 
@@ -64,7 +66,80 @@ public class TitleBarLayout extends RelativeLayout implements View.OnClickListen
 
     public TitleBarLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        handleAttributeSet(context, attrs);
         initView();
+    }
+
+
+    private void handleAttributeSet(Context context, AttributeSet attrs) {
+
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.TitleBarLayout);
+        //title
+        mTitleTxt = ta.getString(R.styleable.TitleBarLayout_title_txt);
+        mTitleTxtSize = (int) ta.getDimension(R.styleable.TitleBarLayout_title_txt_size, sp2px(20));
+        mTitleTxtColor = ta.getColor(R.styleable.TitleBarLayout_title_txt_color, Color.WHITE);
+
+        //left
+        mLeftTxt = ta.getString(R.styleable.TitleBarLayout_left_txt);
+        mLeftTxtSize = (int) ta.getDimension(R.styleable.TitleBarLayout_left_txt_size, sp2px(15));
+        mLeftTxtColor = ta.getColorStateList(R.styleable.TitleBarLayout_title_txt_color);
+        if (null == mLeftTxtColor) {
+            mLeftTxtColor = getResources().getColorStateList(R.color.selector_title_bar_text);
+        }
+        mLeftDrawable = ta.getDrawable(R.styleable.TitleBarLayout_left_drawable);
+        if (null == mLeftDrawable) {
+            mLeftDrawable = getResources().getDrawable(R.drawable.selector_btn_left);
+        }
+
+        //right
+        mRightTxt = ta.getString(R.styleable.TitleBarLayout_right_txt);
+        mRightTxtSize = (int) ta.getDimension(R.styleable.TitleBarLayout_right_txt_size, sp2px(15));
+        mRightTxtColor = ta.getColorStateList(R.styleable.TitleBarLayout_title_txt_color);
+        if (null == mRightTxtColor) {
+            mRightTxtColor = getResources().getColorStateList(R.color.selector_title_bar_text);
+        }
+        mRightDrawable = ta.getDrawable(R.styleable.TitleBarLayout_right_drawable);
+        if (null == mRightDrawable) {
+            mRightDrawable = getResources().getDrawable(R.drawable.selector_btn_right);
+        }
+
+        int actionType = ta.getInteger(R.styleable.TitleBarLayout_action_type, -1);
+
+        switch (actionType) {
+            case 0:
+                mCurrActionType = ActionType.LEFT_IMG;
+                break;
+            case 1:
+                mCurrActionType = ActionType.LEFT_IMG_RIGHT_IMG;
+                break;
+            case 2:
+                mCurrActionType = ActionType.LEFT_IMG_RIGHT_TXT;
+                break;
+            case 3:
+                mCurrActionType = ActionType.LEFT_TXT;
+                break;
+            case 4:
+                mCurrActionType = ActionType.LEFT_TXT_RIGHT_IMG;
+                break;
+            case 5:
+                mCurrActionType = ActionType.LEFT_TXT_RIGHT_TXT;
+                break;
+            case 6:
+                mCurrActionType = ActionType.RIGHT_IMG;
+                break;
+            case 7:
+                mCurrActionType = ActionType.RIGHT_TXT;
+                break;
+            case 8:
+                mCurrActionType = ActionType.ONLY_TITLE;
+                break;
+            default:
+                mCurrActionType = ActionType.LEFT_IMG_RIGHT_IMG;
+                break;
+
+        }
+
+        ta.recycle();
     }
 
     private void initView() {
@@ -74,8 +149,10 @@ public class TitleBarLayout extends RelativeLayout implements View.OnClickListen
         addLeftTextView();
         addRightTextView();
         addTitle();
-        mTextStrLeft = "LEFT";
-        mTextStrRight = "RIGHT";
+        mLeftTxt = "LEFT";
+        mRightTxt = "RIGHT";
+
+        setActionType(mCurrActionType);
     }
 
     private void addTitle() {
@@ -83,14 +160,14 @@ public class TitleBarLayout extends RelativeLayout implements View.OnClickListen
         mTvTitle = new TextView(getContext());
         mTvTitle.setSingleLine(true);
         mTvTitle.setGravity(Gravity.CENTER);
-        mTvTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextSizeTitle);
-        mTvTitle.setTextColor(mTextColorTitle);
-        mTvTitle.setText(mTextStrTitle);
+        mTvTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTitleTxtSize);
+        mTvTitle.setTextColor(mTitleTxtColor);
+        mTvTitle.setText(mTitleTxt);
         RelativeLayout.LayoutParams paramTitle = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         paramTitle.addRule(RelativeLayout.CENTER_IN_PARENT);
-        paramTitle.addRule(RelativeLayout.RIGHT_OF, mTvLeft.getId());
-        paramTitle.addRule(RelativeLayout.LEFT_OF, mTvRight.getId());
+//        paramTitle.addRule(RelativeLayout.RIGHT_OF, mTvLeft.getId());
+//        paramTitle.addRule(RelativeLayout.LEFT_OF, mTvRight.getId());
         addView(mTvTitle, paramTitle);
     }
 
@@ -104,7 +181,7 @@ public class TitleBarLayout extends RelativeLayout implements View.OnClickListen
         mTvLeft.setOnClickListener(this);
 
         //drawable
-        setTextViewDrawable(mTvLeft, mDrawableLeft);
+        setTextViewDrawable(mTvLeft, mLeftDrawable);
 
         //text
         initLeftText();
@@ -127,7 +204,7 @@ public class TitleBarLayout extends RelativeLayout implements View.OnClickListen
         mTvRight.setOnClickListener(this);
 
         //drawable
-        setTextViewDrawable(mTvRight, mDrawableRight);
+        setTextViewDrawable(mTvRight, mRightDrawable);
 
         //text
         initRightText();
@@ -153,28 +230,28 @@ public class TitleBarLayout extends RelativeLayout implements View.OnClickListen
     }
 
     private void initLeftText() {
-        if (null == mTextStrLeft) {
+        if (null == mLeftTxt) {
             return;
         }
-        mTvLeft.setText(mTextStrLeft);
-        mTvLeft.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextSizeLeft > 0 ? mTextSizeLeft : sp2px(15));
-        if (null == mTextColorLeft) {
+        mTvLeft.setText(mLeftTxt);
+        mTvLeft.setTextSize(TypedValue.COMPLEX_UNIT_PX, mLeftTxtSize > 0 ? mLeftTxtSize : sp2px(15));
+        if (null == mLeftTxtColor) {
             mTvLeft.setTextColor(Color.WHITE);
         } else {
-            mTvLeft.setTextColor(mTextColorLeft);
+            mTvLeft.setTextColor(mLeftTxtColor);
         }
     }
 
     private void initRightText() {
-        if (null == mTextStrRight) {
+        if (null == mRightTxt) {
             return;
         }
-        mTvRight.setText(mTextStrRight);
-        mTvRight.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextSizeRight > 0 ? mTextSizeRight : sp2px(15));
-        if (null == mTextColorRight) {
+        mTvRight.setText(mRightTxt);
+        mTvRight.setTextSize(TypedValue.COMPLEX_UNIT_PX, mRightTxtSize > 0 ? mRightTxtSize : sp2px(15));
+        if (null == mRightTxtColor) {
             mTvRight.setTextColor(Color.WHITE);
         } else {
-            mTvRight.setTextColor(mTextColorRight);
+            mTvRight.setTextColor(mRightTxtColor);
         }
     }
 
@@ -187,8 +264,8 @@ public class TitleBarLayout extends RelativeLayout implements View.OnClickListen
                 mBaseLinePaint = new Paint();
                 mBaseLinePaint.setColor(Color.GRAY);
             }
-            canvas.drawRect(0, getMeasuredHeight() - mBaseLineHeight, getMeasuredWidth(),
-                    getMeasuredHeight(), mBaseLinePaint);
+            canvas.drawRect(0, getMeasuredHeight() - mBaseLineHeight,
+                    getMeasuredWidth(), getMeasuredHeight(), mBaseLinePaint);
             return;
         }
     }
@@ -197,34 +274,34 @@ public class TitleBarLayout extends RelativeLayout implements View.OnClickListen
         mCurrActionType = actionType;
         switch (mCurrActionType) {
             case LEFT_IMG:
-                setTextViewImgType(mTvLeft, mDrawableLeft);
+                setTextViewImgType(mTvLeft, mLeftDrawable);
                 mTvRight.setVisibility(View.INVISIBLE);
                 break;
             case LEFT_IMG_RIGHT_IMG:
-                setTextViewImgType(mTvLeft, mDrawableLeft);
-                setTextViewImgType(mTvRight, mDrawableRight);
+                setTextViewImgType(mTvLeft, mLeftDrawable);
+                setTextViewImgType(mTvRight, mRightDrawable);
                 break;
             case LEFT_IMG_RIGHT_TXT:
-                setTextViewImgType(mTvLeft, mDrawableLeft);
-                setTextViewTxtType(mTvRight, mTextStrRight);
+                setTextViewImgType(mTvLeft, mLeftDrawable);
+                setTextViewTxtType(mTvRight, mRightTxt);
                 break;
 
             case LEFT_TXT:
-                setTextViewTxtType(mTvLeft, mTextStrLeft);
+                setTextViewTxtType(mTvLeft, mLeftTxt);
                 mTvRight.setVisibility(View.INVISIBLE);
                 break;
             case LEFT_TXT_RIGHT_IMG:
-                setTextViewTxtType(mTvLeft, mTextStrLeft);
-                setTextViewImgType(mTvRight, mDrawableRight);
+                setTextViewTxtType(mTvLeft, mLeftTxt);
+                setTextViewImgType(mTvRight, mRightDrawable);
                 break;
             case LEFT_TXT_RIGHT_TXT:
-                setTextViewTxtType(mTvLeft, mTextStrLeft);
-                setTextViewTxtType(mTvRight, mTextStrRight);
+                setTextViewTxtType(mTvLeft, mLeftTxt);
+                setTextViewTxtType(mTvRight, mRightTxt);
                 break;
 
             case RIGHT_IMG:
                 mTvLeft.setVisibility(View.INVISIBLE);
-                setTextViewImgType(mTvRight, mDrawableRight);
+                setTextViewImgType(mTvRight, mRightDrawable);
                 break;
             case RIGHT_TXT:
                 mTvLeft.setVisibility(View.INVISIBLE);
@@ -293,8 +370,8 @@ public class TitleBarLayout extends RelativeLayout implements View.OnClickListen
     }
 
     public void setLeftDrawable(int resId) {
-        mDrawableLeft = getResources().getDrawable(resId);
-        mTvLeft.setCompoundDrawables(mDrawableLeft, null, null, null);
+        mLeftDrawable = getResources().getDrawable(resId);
+        mTvLeft.setCompoundDrawables(mLeftDrawable, null, null, null);
     }
 
     public void setLeftPadding(int left, int top, int right, int bottom) {
@@ -302,13 +379,13 @@ public class TitleBarLayout extends RelativeLayout implements View.OnClickListen
     }
 
     public void setLeftSideTxtColor(int resId) {
-        mTextColorLeft = ColorStateList.valueOf(getResources().getColor(resId));
-        mTvLeft.setTextColor(mTextColorLeft);
+        mLeftTxtColor = ColorStateList.valueOf(getResources().getColor(resId));
+        mTvLeft.setTextColor(mLeftTxtColor);
     }
 
     public void setLeftTxtColorStateList(int resId) {
-        mTextColorLeft = getResources().getColorStateList(resId);
-        mTvLeft.setTextColor(mTextColorLeft);
+        mLeftTxtColor = getResources().getColorStateList(resId);
+        mTvLeft.setTextColor(mLeftTxtColor);
     }
 
     //right
@@ -322,8 +399,8 @@ public class TitleBarLayout extends RelativeLayout implements View.OnClickListen
 
 
     public void setRightDrawable(int resId) {
-        mDrawableRight = getResources().getDrawable(resId);
-        mTvRight.setCompoundDrawables(mDrawableRight, null, null, null);
+        mRightDrawable = getResources().getDrawable(resId);
+        mTvRight.setCompoundDrawables(mRightDrawable, null, null, null);
     }
 
     public void setRightPadding(int Right, int top, int right, int bottom) {
@@ -332,13 +409,13 @@ public class TitleBarLayout extends RelativeLayout implements View.OnClickListen
 
 
     public void setRightSideTxtColor(int resId) {
-        mTextColorRight = ColorStateList.valueOf(getResources().getColor(resId));
-        mTvRight.setTextColor(mTextColorRight);
+        mRightTxtColor = ColorStateList.valueOf(getResources().getColor(resId));
+        mTvRight.setTextColor(mRightTxtColor);
     }
 
     public void setRightTxtColorStateList(int resId) {
-        mTextColorRight = getResources().getColorStateList(resId);
-        mTvRight.setTextColor(mTextColorRight);
+        mRightTxtColor = getResources().getColorStateList(resId);
+        mTvRight.setTextColor(mRightTxtColor);
     }
 
     //base line

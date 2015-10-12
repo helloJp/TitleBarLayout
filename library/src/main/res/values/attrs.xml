@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TitleBarLayout">
+
+        <attr name="title_txt_size" format="dimension|reference"/>
+        <attr name="title_txt_color" format="color|reference"/>
+        <attr name="title_txt" format="string|reference"/>
+
+        <attr name="left_txt" format="string|reference"/>
+        <attr name="left_txt_size" format="dimension|reference"/>
+        <attr name="left_text_color" format="color|reference"/>
+        <attr name="left_drawable" format="reference"/>
+
+        <attr name="right_txt" format="string|reference"/>
+        <attr name="right_txt_size" format="dimension|reference"/>
+        <attr name="right_text_color" format="color|reference"/>
+        <attr name="right_drawable" format="reference"/>
+
+        <attr name="action_type">
+            <enum name="LEFT_IMG" value="0"/>
+            <enum name="LEFT_IMG_RIGHT_IMG" value="1"/>
+            <enum name="LEFT_IMG_RIGHT_TXT" value="2"/>
+
+            <enum name="LEFT_TXT" value="3"/>
+            <enum name="LEFT_TXT_RIGHT_IMG" value="4"/>
+            <enum name="LEFT_TXT_RIGHT_TXT" value="5"/>
+
+            <enum name="RIGHT_IMG" value="6"/>
+            <enum name="RIGHT_TXT" value="7"/>
+            <enum name="ONLY_TITLE" value="8"/>
+        </attr>
+
+    </declare-styleable>
+</resources>
