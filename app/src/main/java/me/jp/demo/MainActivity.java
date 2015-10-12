@@ -8,7 +8,7 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 import me.jp.demo.activity.CommonActivity;
-import me.jp.demo.activity.FrgmtActivity;
+import me.jp.demo.activity.FragmentsActivity;
 import me.jp.titlebarlayout.TitleBarActivity;
 import me.jp.titlebarlayout.view.TitleBarLayout;
 
@@ -41,7 +41,7 @@ public class MainActivity extends TitleBarActivity implements OnClickListener {
                 gotoActivity(CommonActivity.class);
                 break;
             case R.id.btn_fragment_activity:
-                gotoActivity(FrgmtActivity.class);
+                gotoActivity(FragmentsActivity.class);
                 break;
         }
     }

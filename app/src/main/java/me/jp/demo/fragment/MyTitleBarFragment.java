@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import me.jp.demo.R;
 import me.jp.titlebarlayout.TitleBarFragment;
 import me.jp.titlebarlayout.view.TitleBarLayout;
 
@@ -32,10 +34,14 @@ public class MyTitleBarFragment extends TitleBarFragment {
         textView.setGravity(Gravity.CENTER);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         textView.setTextColor(Color.GRAY);
-
         return textView;
     }
 
+    @Override
+    public void onViewCreated(View contentView, @Nullable Bundle savedInstanceState) {
+
+        super.onViewCreated(contentView, savedInstanceState);
+    }
 
     public static Fragment newInstance(String titleBar) {
         Bundle bundle = new Bundle();
@@ -53,6 +59,7 @@ public class MyTitleBarFragment extends TitleBarFragment {
         Fragment fragment = new MyTitleBarFragment();
         fragment.setArguments(bundle);
         return fragment;
+
     }
 
 

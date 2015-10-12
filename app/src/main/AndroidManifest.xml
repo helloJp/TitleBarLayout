@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.CommonActivity" />
-        <activity android:name=".activity.FrgmtActivity" />
+        <activity android:name=".activity.FragmentsActivity" />
     </application>
 
 </manifest>

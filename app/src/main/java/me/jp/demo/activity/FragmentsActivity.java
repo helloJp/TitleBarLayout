@@ -15,7 +15,7 @@ import me.jp.demo.fragment.MyTitleBarFragment;
 /**
  * Created by ${JiangPing} on 2015/9/29.
  */
-public class FrgmtActivity extends AppCompatActivity {
+public class FragmentsActivity extends AppCompatActivity {
     private RadioGroup mRgTabs;
     private ViewPager mViewPager;
 
@@ -39,6 +39,7 @@ public class FrgmtActivity extends AppCompatActivity {
                 }
             }
         });
+
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -51,9 +52,9 @@ public class FrgmtActivity extends AppCompatActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
+        ((RadioButton)mRgTabs.getChildAt(0)).setChecked(true);
     }
 
     private void initView() {

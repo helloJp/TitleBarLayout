@@ -47,6 +47,7 @@ public class CommonActivity extends TitleBarActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.title_bar_left:
+//                Toast.makeText(this, "left click", Toast.LENGTH_SHORT).show();
                 finish();
                 break;
             case R.id.title_bar_right:

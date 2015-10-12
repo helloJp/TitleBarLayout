@@ -20,7 +20,6 @@
         <RadioButton
             style="@style/tabs"
             android:text="tab1"
-            android:checked="true"
             />
         <RadioButton
             style="@style/tabs"
