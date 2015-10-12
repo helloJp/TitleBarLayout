@@ -1,0 +1,43 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/holo_green_dark"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    tools:context=".MainActivity"
+    >
+
+
+    <Button
+        android:id="@+id/btn_titleBar_toggle"
+        style="@style/MatchWrap.Button"
+        android:text="titleBar Toggle"
+        />
+
+    <Button
+        android:id="@+id/btn_change_color"
+        style="@style/MatchWrap.Button"
+        android:text="change Color"
+        />
+
+    <Button
+        android:id="@+id/btn_change_type"
+        style="@style/MatchWrap.Button"
+        android:text="change action type"
+        />
+    <Button
+        android:id="@+id/btn_title_txt"
+        style="@style/MatchWrap.Button"
+        android:text="change title txt"
+        />
+    <Button
+        android:id="@+id/btn_show_baseLine"
+        style="@style/MatchWrap.Button"
+        android:text="show base line"
+        />
+
+</LinearLayout>
