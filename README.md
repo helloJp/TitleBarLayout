@@ -6,5 +6,17 @@
 
 </br>
 
-![titleBarActivity shot](https://github.com/helloJp/TitleBarLayout/blob/master/art%2Fscreen_shot_01.gif)
+![titleBarActivity shot](https://github.com/helloJp/TitleBarLayout/blob/master/art%2Fscreen_shot_01.gif)</br>
+###ActionType
+  	LEFT_IMG,
+    LEFT_IMG_RIGHT_IMG,
+    LEFT_IMG_RIGHT_TXT,
 
+    LEFT_TXT,
+    LEFT_TXT_RIGHT_IMG,
+    LEFT_TXT_RIGHT_TXT,
+
+    RIGHT_IMG,
+    RIGHT_TXT,
+    ONLY_TITLE
+    
